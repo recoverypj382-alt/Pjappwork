@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PJ GAMING — Giveaway</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #070d1d;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      padding: 46px 18px 28px;
+    }
+    .card {
+      width: min(100%, 640px);
+      background: #151c35;
+      border-radius: 40px;
+      padding: 48px 38px 32px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.28);
+      text-align: center;
+    }
+    .gift {
+      font-size: 92px;
+      line-height: 1;
+      margin-bottom: 22px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 7vw, 54px);
+      line-height: 1.08;
+      letter-spacing: .5px;
+    }
+    .subtitle {
+      margin: 34px auto 28px;
+      max-width: 540px;
+      color: #b8bfd1;
+      font-size: clamp(20px, 4.2vw, 29px);
+      line-height: 1.55;
+    }
+    input {
+      width: 100%;
+      height: 76px;
+      border: 0;
+      outline: 0;
+      border-radius: 24px;
+      margin: 0 0 22px;
+      padding: 0 28px;
+      font-size: 20px;
+      color: #333;
+      background: #fff;
+    }
+    button {
+      width: 100%;
+      min-height: 76px;
+      border: 0;
+      border-radius: 24px;
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
+      background: #25d366;
+      color: #fff;
+      transition: transform .15s, filter .15s;
+    }
+    button:active { transform: scale(.985); }
+    button:hover { filter: brightness(1.06); }
+    .share-panel {
+      display: none;
+      margin-top: 28px;
+      padding: 26px;
+      border-radius: 26px;
+      background: #0e152b;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .share-panel.show { display: block; }
+    .share-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .progress-text { color: #b8bfd1; margin-bottom: 18px; }
+    .bar {
+      height: 14px;
+      background: #252d46;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+    .fill {
+      width: 0%;
+      height: 100%;
+      background: #25d366;
+      transition: width .25s ease;
+    }
+    .share-btn {
+      background: #128c7e;
+      margin-top: 4px;
+    }
+    .claim-btn {
+      display: none;
+      margin-top: 14px;
+      background: #ffb300;
+      color: #111;
+    }
+    .claim-btn.show { display: block; }
+    .small {
+      margin-top: 13px;
+      color: #8992aa;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    footer {
+      margin-top: 30px;
+      color: #737d98;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    .error {
+      color: #ff8f8f;
+      margin-top: 12px;
+      display: none;
+      font-size: 14px;
+    }
+    @media (max-width: 520px) {
+      body { padding: 22px 12px; }
+      .card { border-radius: 34px; padding: 42px 24px 28px; }
+      .gift { font-size: 78px; }
+      input, button { height: 68px; min-height: 68px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="gift">🎁</div>
+    <h1>PJ GAMING<br>FREE FIRE SKIN TOOLS<br>GIVEAWAY</h1>
+
+    <p class="subtitle">
+      ENTER YOUR DETAILS AND SHARE OUR WHATSAPP CHANNEL.
+      COMPLETE 10 SHARES TO BECOME ELIGIBLE FOR YOUR PRIZE.
+    </p>
+
+    <input id="name" type="text" placeholder="ENTER YOUR NAME" autocomplete="name" />
+    <button id="enterBtn" onclick="startGiveaway()">ENTER GIVEAWAY</button>
+
+    <div id="error" class="error"></div>
+
+    <section id="sharePanel" class="share-panel">
+      <div class="share-title">SHARE TO PROGRESS</div>
+      <div id="progressText" class="progress-text">0 / 10 shares</div>
+      <div class="bar"><div id="fill" class="fill"></div></div>
+
+      <button class="share-btn" onclick="shareChannel()">SHARE WHATSAPP CHANNEL</button>
+      <button id="claimBtn" class="claim-btn" onclick="claimPrize()">UNLOCK PRIZE</button>
+
+      <div class="small">
+        This page counts completed share actions on this device. It does not
+        independently verify whether recipients actually received or followed the channel.
+      </div>
+    </section>
+
+    <footer>© 2026 PJ GAMING | FREE FIRE SKIN TOOLS GIVEAWAY</footer>
+  </main>
+
+<script>
+  // Replace this with your real WhatsApp Channel URL.
+  const CHANNEL_URL = "https://whatsapp.com/channel/YOUR_CHANNEL_LINK";
+  const REQUIRED_SHARES = 10;
+  let shares = 0;
+
+  function startGiveaway() {
+    const name = document.getElementById("name").value.trim();
+    const error = document.getElementById("error");
+
+    if (!name) {
+      error.textContent = "Please enter your name first.";
+      error.style.display = "block";
+      return;
+    }
+
+    error.style.display = "none";
+    document.getElementById("enterBtn").style.display = "none";
+    document.getElementById("sharePanel").classList.add("show");
+    updateProgress();
+  }
+
+  async function shareChannel() {
+    if (shares >= REQUIRED_SHARES) return;
+
+    const shareData = {
+      title: "PJ GAMING Giveaway",
+      text: "Join the PJ GAMING WhatsApp Channel and check out the giveaway!",
+      url: CHANNEL_URL
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(CHANNEL_URL);
+        alert("Channel link copied. Share it on WhatsApp.");
+      }
+
+      shares++;
+      updateProgress();
+    } catch (e) {
+      // User cancelled the native share sheet; don't count it.
+    }
+  }
+
+  function updateProgress() {
+    const percent = Math.min(100, (shares / REQUIRED_SHARES) * 100);
+    document.getElementById("progressText").textContent =
+      `${shares} / ${REQUIRED_SHARES} shares`;
+    document.getElementById("fill").style.width = percent + "%";
+
+    if (shares >= REQUIRED_SHARES) {
+      document.getElementById("claimBtn").classList.add("show");
+      document.querySelector(".share-title").textContent = "SHARE TARGET REACHED";
+    }
+  }
+
+  function claimPrize() {
+    const name = document.getElementById("name").value.trim();
+    alert(
+      `Congratulations ${name}!\\n\\nYour local share target has been reached. ` +
+      `Connect this button to your real prize-claim system before using it in production.`
+    );
+  }
+</script>
+</body>
+</html>
